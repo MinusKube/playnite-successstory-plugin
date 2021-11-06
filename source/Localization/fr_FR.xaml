@@ -120,6 +120,7 @@
     <sys:String x:Key="LOCSuccessStoryViewsSettings">Vue de l'extension</sys:String>
     <sys:String x:Key="LOCSuccessStoryEnableRaretyIndicator">Afficher l'indicateur de rareté sur les succès</sys:String>
     <sys:String x:Key="LOCSuccessStoryDisplayRarityValue">Afficher la rareté sur l'image des succès</sys:String>
+    <sys:String x:Key="LOCSuccessStoryDisplayProgressValue">Afficher la progression sur l'image des succès</sys:String>
     <sys:String x:Key="LOCSuccessStoryEnableOneGameView">Afficher uniquement les succès du jeu sélectionné dans le menu de jeu</sys:String>
     <sys:String x:Key="LOCSuccessStoryEnableAuto100PercentCompleted">Régler automatiquement le jeu sur &quot;Battre&quot; lorsque tous les succès sont débloqués</sys:String>
     <sys:String x:Key="LOCSuccessStoryListGames">Liste de jeux</sys:String>

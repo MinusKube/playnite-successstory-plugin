@@ -77,7 +77,10 @@
                                                       IsGray="{Binding IsGray}"
                                                       Percent="{Binding Percent}"
                                                       EnableRaretyIndicator="{Binding EnableRaretyIndicator}"
-                                                      DispalyRaretyValue="{Binding DisplayRaretyValue}" />
+                                                      DispalyRaretyValue="{Binding DisplayRaretyValue}"
+                                                      ProgressCurrent="{Binding ProgressCurrent}"
+                                                      ProgressMax="{Binding ProgressMax}"
+                                                      DisplayProgressValue="{Binding DisplayProgressValue}"/>
                         </StackPanel>
                         
                         <Grid Grid.Column="1" Margin="10,0,0,0">

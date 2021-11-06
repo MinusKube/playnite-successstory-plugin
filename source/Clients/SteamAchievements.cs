@@ -800,14 +800,20 @@ namespace SuccessStory.Clients
                     {
                         foreach (KeyValue AchievementsData in SchemaForGame.Children?.Find(x => x.Name == "availableGameStats").Children?.Find(x => x.Name == "achievements").Children)
                         {
-                            AllAchievements.Find(x => x.ApiName.IsEqual(AchievementsData.Name)).IsHidden = AchievementsData.Children?.Find(x => x.Name.IsEqual("hidden")).Value == "1";
-                            AllAchievements.Find(x => x.ApiName.IsEqual(AchievementsData.Name)).UrlUnlocked = AchievementsData.Children?.Find(x => x.Name.IsEqual("icon")).Value;
-                            AllAchievements.Find(x => x.ApiName.IsEqual(AchievementsData.Name)).UrlLocked = AchievementsData.Children?.Find(x => x.Name.IsEqual("icongray")).Value;
+                            var Achievement = AllAchievements.Find(x => x.ApiName.IsEqual(AchievementsData.Name));
 
-                            if (AllAchievements.Find(x => x.ApiName.IsEqual(AchievementsData.Name)).IsHidden)
+                            Achievement.IsHidden = AchievementsData.Children?.Find(x => x.Name.IsEqual("hidden")).Value == "1";
+                            Achievement.UrlUnlocked = AchievementsData.Children?.Find(x => x.Name.IsEqual("icon")).Value;
+                            Achievement.UrlLocked = AchievementsData.Children?.Find(x => x.Name.IsEqual("icongray")).Value;
+
+                            if (Achievement.IsHidden)
                             {
-                                AllAchievements.Find(x => x.ApiName.IsEqual(AchievementsData.Name)).Description = FindHiddenDescription(AppId, AllAchievements.Find(x => x.ApiName.IsEqual(AchievementsData.Name)).Name);
+                                Achievement.Description = FindHiddenDescription(AppId, Achievement.Name);
                             }
+
+                            Tuple<int, int> Progress = FindProgress(AppId, Achievement.Name);
+                            Achievement.ProgressCurrent = Progress.Item1;
+                            Achievement.ProgressMax = Progress.Item2;
                         }
                     }
                     catch (Exception ex)
@@ -965,7 +971,95 @@ namespace SuccessStory.Clients
 
             return string.Empty;
         }
+        private Tuple<int, int> FindProgress(int AppId, string DisplayName, bool TryByName = false)
+        {
+            string url = string.Empty;
+            string ResultWeb = string.Empty;
+            bool noData = true;
 
+            // Get data
+            if (HtmlDocument == null)
+            {
+                if (!TryByName)
+                {
+                    Common.LogDebug(true, $"FindProgress() for {SteamId} - {AppId}");
+
+                    url = string.Format(UrlProfilById, SteamId, AppId, LocalLang);
+                    try
+                    {
+                        WebViewOffscreen.NavigateAndWait(url);
+                        ResultWeb = WebViewOffscreen.GetPageSource();
+                    }
+                    catch (WebException ex)
+                    {
+                        Common.LogError(ex, false, $"Error on FindProgress()");
+                    }
+                }
+                else
+                {
+                    Common.LogDebug(true, $"FindProgress() for {SteamUser} - {AppId}");
+
+                    url = string.Format(UrlProfilByName, SteamUser, AppId, LocalLang);
+                    try
+                    {
+                        WebViewOffscreen.NavigateAndWait(url);
+                        ResultWeb = WebViewOffscreen.GetPageSource();
+                    }
+                    catch (WebException ex)
+                    {
+                        Common.LogError(ex, false, $"Error on FindProgress()");
+                    }
+                }
+
+                if (!ResultWeb.IsNullOrEmpty())
+                {
+                    HtmlParser parser = new HtmlParser();
+                    HtmlDocument = parser.Parse(ResultWeb);
+
+                    if (HtmlDocument.QuerySelectorAll("div.achieveRow").Length != 0)
+                    {
+                        noData = false;
+                    }
+                }
+
+                if (!TryByName && noData)
+                {
+                    HtmlDocument = null;
+                    return FindProgress(AppId, DisplayName, TryByName = true);
+                }
+                else if (noData)
+                {
+                    return Tuple.Create(0, 0);
+                }
+            }
+
+            // Find the achievement progress
+            if (HtmlDocument != null)
+            {
+                foreach (var achieveRow in HtmlDocument.QuerySelectorAll("div.achieveRow"))
+                {
+                    try
+                    {
+                        if (achieveRow.QuerySelector("h3").InnerHtml.IsEqual(DisplayName))
+                        {
+                            string Progress = achieveRow.QuerySelector(".progressText").InnerHtml.Trim();
+                            Match ProgressMatch = Regex.Match(Progress, @"(\d+)\s*/\s*(\d+)");
+
+                            int.TryParse(ProgressMatch.Groups[1].Value, out int ProgressCurrent);
+                            int.TryParse(ProgressMatch.Groups[2].Value, out int ProgressMax);
+
+                            return Tuple.Create(ProgressCurrent, ProgressMax);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Common.LogError(ex, false);
+                    }
+                }
+            }
+
+            return Tuple.Create(0, 0);
+        }
 
         public List<Achievements> GetGlobalAchievementPercentagesForApp(int AppId, List<Achievements> AllAchievements)
         {

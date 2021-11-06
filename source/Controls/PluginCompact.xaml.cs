@@ -167,6 +167,9 @@ namespace SuccessStory.Controls
                 achievementImage.Percent = ControlDataContext.LastestAchievement.Percent;
                 achievementImage.EnableRaretyIndicator = ControlDataContext.LastestAchievement.EnableRaretyIndicator;
                 achievementImage.DispalyRaretyValue = ControlDataContext.LastestAchievement.DisplayRaretyValue;
+                achievementImage.ProgressCurrent = ControlDataContext.LastestAchievement.ProgressCurrent;
+                achievementImage.ProgressMax = ControlDataContext.LastestAchievement.ProgressMax;
+                achievementImage.DisplayProgressValue = ControlDataContext.LastestAchievement.DisplayProgressValue;
 
                 PART_AchievementImage.Children.Add(achievementImage);
 
@@ -301,6 +304,9 @@ namespace SuccessStory.Controls
                             achievementImage.Percent = AchievementsList[i].Percent;
                             achievementImage.EnableRaretyIndicator = AchievementsList[i].EnableRaretyIndicator;
                             achievementImage.DispalyRaretyValue = AchievementsList[i].DisplayRaretyValue;
+                            achievementImage.ProgressCurrent = AchievementsList[i].ProgressCurrent;
+                            achievementImage.ProgressMax = AchievementsList[i].ProgressMax;
+                            achievementImage.DisplayProgressValue = AchievementsList[i].DisplayProgressValue;
 
                             PART_ScCompactView.Children.Add(achievementImage);
                         }

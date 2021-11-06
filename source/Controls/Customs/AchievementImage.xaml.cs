@@ -100,6 +100,42 @@ namespace SuccessStory.Controls.Customs
             get { return (float)GetValue(PercentProperty); }
             set { SetValue(PercentProperty, value); }
         }
+
+        public static readonly DependencyProperty DisplayProgressValueProperty = DependencyProperty.Register(
+            nameof(DisplayProgressValue),
+            typeof(bool),
+            typeof(AchievementImage),
+            new FrameworkPropertyMetadata(true)
+        );
+        public bool DisplayProgressValue
+        {
+            get { return (bool)GetValue(DisplayProgressValueProperty); }
+            set { SetValue(DisplayProgressValueProperty, value); }
+        }
+
+        public static readonly DependencyProperty ProgressCurrentProperty = DependencyProperty.Register(
+            nameof(ProgressCurrent),
+            typeof(int),
+            typeof(AchievementImage),
+            new FrameworkPropertyMetadata(default(int))
+        );
+        public int ProgressCurrent
+        {
+            get { return (int)GetValue(ProgressCurrentProperty); }
+            set { SetValue(ProgressCurrentProperty, value); }
+        }
+
+        public static readonly DependencyProperty ProgressMaxProperty = DependencyProperty.Register(
+            nameof(ProgressMax),
+            typeof(int),
+            typeof(AchievementImage),
+            new FrameworkPropertyMetadata(default(int))
+        );
+        public int ProgressMax
+        {
+            get { return (int)GetValue(ProgressMaxProperty); }
+            set { SetValue(ProgressMaxProperty, value); }
+        }
         #endregion
 
 
@@ -123,6 +159,9 @@ namespace SuccessStory.Controls.Customs
             {
                 PART_Label.Content = Math.Round(Percent, 1);
                 PART_ProgressBar.Value = Math.Round(Percent, 1);
+
+                PART_ProgressLabel.Content = $"{ProgressCurrent}/{ProgressMax}";
+                PART_ProgressProgressBar.Value = Math.Round(100.0 * ProgressCurrent / ProgressMax);
 
                 if (Percent > PluginDatabase.PluginSettings.Settings.RarityUltraRare)
                 {

@@ -33,6 +33,10 @@ namespace SuccessStory.Models
         /// </summary>
         public float Percent { get; set; } = 100;
 
+        public int ProgressCurrent { get; set; }
+
+        public int ProgressMax { get; set; }
+
         public string Category { get; set; } = string.Empty;
         public string ParentCategory { get; set; } = string.Empty;
 
@@ -191,6 +195,12 @@ namespace SuccessStory.Models
                 }
                 return PluginDatabase.PluginSettings.Settings.DisplayRarityValue;
             }
+        }
+
+        [DontSerialize]
+        public bool DisplayProgressValue
+        {
+            get { return PluginDatabase.PluginSettings.Settings.DisplayProgressValue && ProgressMax > 0; }
         }
 
         [DontSerialize]
