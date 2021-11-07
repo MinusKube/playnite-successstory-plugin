@@ -1042,7 +1042,14 @@ namespace SuccessStory.Clients
                     {
                         if (achieveRow.QuerySelector("h3").InnerHtml.IsEqual(DisplayName))
                         {
-                            string Progress = achieveRow.QuerySelector(".progressText").InnerHtml.Trim();
+                            var progressText = achieveRow.QuerySelector(".progressText");
+
+                            if (progressText == null)
+                            {
+                                return Tuple.Create(0, 0);
+                            }
+
+                            string Progress = progressText.InnerHtml.Trim();
                             Match ProgressMatch = Regex.Match(Progress, @"(\d+)\s*/\s*(\d+)");
 
                             int.TryParse(ProgressMatch.Groups[1].Value, out int ProgressCurrent);
