@@ -779,6 +779,10 @@ namespace SuccessStory.Clients
 
         private Tuple<List<Achievements>, List<GameStats>> GetSchemaForGame(int AppId, List<Achievements> AllAchievements, List<GameStats> AllStats)
         {
+            // Reset the HtmlDocument so the FindHiddenDescription and FindProgress methods
+            // know they need to execute the web request again
+            HtmlDocument = null;
+
             try
             {
                 if (PluginDatabase.PluginSettings.Settings.EnableSteamWithoutWebApi)
